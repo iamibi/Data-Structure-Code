@@ -1,4 +1,4 @@
 Data-Structure-Code
 ===================
 
-This is a project on Data Structure, all my codes from it.
+All the basic data structure codes are present in this repository.
