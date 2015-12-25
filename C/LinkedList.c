@@ -1,199 +1,225 @@
-/*
-*This program is of linked list for insertion at different positions i.e,
-*either at starting, after end or in between.
-*Then traversing the whole list.
-*Made by Ibrahim. 16/9/2014.
-*/
+#include <stdio.h>
+#include <stdlib.h>
 
-#include<stdio.h>
-#include<stdlib.h>
+long int count = 0;
 
-int traverse();
-int insert_at_beg();
-int insert_at_end();
-int insert_in_between();
-
-struct node
+typedef struct Node
 {
-	int data;
-	struct node *link;
-};
-struct node *start;
+    int data;
+    struct Node *next;
+}Node;
 
-main()
+Node *start = NULL;
+
+void insert_at_beg()
 {
-	int choice;
-	
-	while(1)
-	{
-		printf("Linked List Operations are\n");
-		printf("1.Insert element at beginning\n2.Insert element at End\n3.Insert element in between\n4.Traverse Linked List\n5.Delete\n6.Exit\n");
-		printf("Enter your choice: ");
-		scanf("%d",&choice);
-		
-		switch(choice)
-		{
-			case 1:
-					insert_at_beg();
-					break;
-			case 2:
-					insert_at_end();
-					break;
-			case 3:
-					insert_in_between();
-					break;
-			case 4:
-					traverse();
-					break;
-			case 5:
-					delete();
-					break;
-			case 6:
-					exit(0);
-			default:
-					printf("Wrong Choice\n");
-		}
-	}
-	return 0;
+    Node *ptr;
+
+    ptr = (Node *)malloc(sizeof(Node));
+    if (ptr == NULL)
+    {
+        printf ("Insufficient Memory, Please delete some nodes from the list\n");
+        return;
+    }
+    printf ("Enter the value you want to insert at the beginning: ");
+    scanf ("%d", &(ptr -> data));
+    ptr -> next = start;
+    start = ptr;
+    count++;
 }
 
-int traverse()
+void insert_at_end()
 {
-	struct node *p;
-	p=start;
-	if(p == NULL)
-	{
-		printf("No Node\n");
-	}
-	while(p != NULL)
-	{
-		printf("%d \t",p->data);
-		p = p -> link;
-	}
-	printf("\n");
-	return 0;
+    Node *ptr;
+
+    ptr = (Node *)malloc(sizeof(Node));
+    if (ptr == NULL)
+    {
+        printf ("Insufficient Memory, Please delete some nodes from the list\n");
+        return;
+    }
+    printf ("Enter the value you want to insert at the end: ");
+    scanf ("%d", &(ptr -> data));
+    if (start == NULL)
+    {
+        ptr -> next = start;
+        start = ptr;
+        printf ("No node in the list. This is the first node\n");
+    }
+    else
+    {
+        Node *loc;
+
+        loc = start;
+        while (loc != NULL)
+            loc = loc -> next;
+        loc -> next = ptr;
+        ptr -> next = NULL;
+    }
+    count++;
 }
 
-int insert_at_beg()
+void insert_in_between()
 {
-	struct node *ptr;
-	int value;
-	ptr = (struct node *)malloc(sizeof(struct node));
-	printf("Enter a value to insert in the beginning: ");
-	scanf("%d",&value);
-	ptr -> data = value;
-	if(start == NULL)
-	{
-		ptr -> link = NULL;
-		printf("The very first node inserted\n");
-	}
-	else
-	{
-		ptr -> link = start;
-		printf("Insertion Successfull\n");
-	}
-	start = ptr;
-	return 0;
+    Node *ptr;
+
+    ptr = (Node *)malloc(sizeof(Node));
+    if (ptr == NULL)
+    {
+        printf ("Insufficient Memory, Please delete some nodes from the list\n");
+        return;
+    }
+    int loc, temp = 0;
+
+    printf ("Enter the value you want to insert in between: ");
+    scanf ("%d", &(ptr -> data));
+    if (start == NULL)
+    {
+        ptr -> next = start;
+        start = ptr;
+        printf ("No Node present in the list. This is the first node\n");
+        count++;
+        return;
+    }
+
+    while (1)
+    {
+        printf ("Enter the location where you want to insert the node: ");
+        scanf ("%d", &loc);
+        if (loc < count && loc >= 0)
+            break;
+        else
+            printf ("The location is not valid\n");
+    }
+    Node *locA;
+
+    locA = start;
+    while (temp < loc)
+    {
+        locA = locA -> next;
+        temp++;
+    }
+
+    ptr -> next = locA -> next;
+    locA -> next = ptr;
 }
 
-int insert_at_end()
+void delete()
 {
-	struct node *ptr, *loc;
-	int val;
-	ptr = (struct node *)malloc(sizeof(struct node));
-	printf("Enter a value to insert in the end: ");
-	scanf("%d",&val);
-	ptr -> data = val;
-	ptr -> link = NULL;
-	if(start == NULL)
-	{
-		start = ptr;
-		printf("The very first node inserted\n");
-	}
-	else
-	{
-		loc = start;
-		while(loc -> link != NULL)
-		{
-			loc = loc -> link;
-		}
-		loc -> link = ptr;
-		printf("Insertion Successful at the end\n");
-	}
-	return 0;
+    Node *curr, *prev;
+
+    curr = start;
+    if (curr == NULL)
+    {
+        printf ("No data to delete from the list\n");
+        return;
+    }
+    int ch, val, temp = 0, i;
+
+    printf ("How do you want to delete the data?\n1.By Value\n2.By Location\nEnter your choice: ");
+    scanf("%d", &ch);
+    switch (ch)
+    {
+        case 1:
+        {
+            printf ("Enter the value you want to delete: ");
+            scanf ("%d", &val);
+            prev = curr;
+            while (curr -> data != val)
+            {
+                temp++;
+                prev = curr;
+                curr = curr -> next;
+                if (curr == NULL)
+                {
+                    printf ("The value doesn't exist\n");
+                    return;
+                }
+            }
+            prev -> next = curr -> next;
+            curr -> data = '\0';
+            free(curr);
+            curr = NULL;
+            break;
+        }
+        case 2:
+        {
+            while (1)
+            {
+                printf ("Enter the location of the node you want to delete: ");
+                scanf ("%d", &val);
+                if (val >= count || val < 0)
+                    printf ("The location doesn't exist\n");
+                else
+                    break;
+            }
+            prev = curr;
+            for (i = 0; i < val; i++)
+            {
+                prev = curr;
+                curr = curr -> next;
+            }
+            prev -> next = curr -> next;
+            curr -> data = '\0';
+            free(curr);
+            curr = NULL;
+            break;
+        }
+        default:
+            printf ("Invalid Choice\n");
+            break;
+    }
 }
 
-int insert_in_between()
+void traverse()
 {
-	struct node *ptr, *temp;
-	ptr = (struct node *)malloc(sizeof(struct node));
-	int loca, value1,i;
-	if(ptr==NULL)
-	{
-		printf("Overflow\n");
-	}
-	else
-	{
-		printf("Enter a value to insert in between: ");
-		scanf("%d",&value1);
-		ptr->data=value1;
-		if(start == NULL)
-		{
-			ptr->link=NULL;
-			start=ptr;
-			printf("The very first node inserted successfully\n");
-		}
-		else
-		{
-			printf("Enter a location: ");
-			scanf("%d",&loca);
-			temp=start;
-			for(i=0;i < loca-1;i++)
-			{
-				temp = temp -> link;
-			}
-			ptr->link = temp->link;
-			temp->link = ptr;
-		}
-	}
-	return 0;
+    if (start == NULL)
+    {
+        printf ("No node to traverse\n");
+        return;
+    }
+    Node *ptr;
+
+    ptr = start;
+    while (ptr != NULL)
+    {
+        printf (" -> %d", ptr -> data);
+        ptr = ptr -> next;
+    }
+    printf ("\nNumber of nodes present = %ld\n", count);
 }
-int delete()
+
+int main()
 {
-	struct node *temp, *prev;
-	float value;
-	if(start == NULL)
-	{
-		printf("UNDERFLOW\n");
-	}
-	else
-	{
-		printf("Enter the value to be deleted: ");
-		scanf("%f",&value);
-    		temp = start;
-    		while(temp != NULL)
-    		{
-    			if(temp -> data == value)
-    			{
-    	  	  		if(temp == start)
-    	    			{
-    	    				start = temp -> link;
-        				free(temp);
-        				return 1;
-        			}
-        			else
-        			{
-        				prev -> link = temp -> link;
-        				free(temp);
-       					return 1;
-        			}
-    			}
-    			else
-    			{
-        			prev = temp;
-        			temp = temp -> link;
-    			}
-    		}
-	}
-	return 0;
+    int ch;
+
+    while (1)
+    {
+        printf ("Single Linked List Program\n1.Insert a node at beginning\n2.Insert a node at the end\n3.Insert a node in between\n4.Delete a node\n5.Traverse\n6.Exit\nEnter your choice: ");
+        scanf ("%d", &ch);
+        switch (ch)
+        {
+            case 1:
+                insert_at_beg();
+                break;
+            case 2:
+                insert_at_end();
+                break;
+            case 3:
+                insert_in_between();
+                break;
+            case 4:
+                delete();
+                break;
+            case 5:
+                traverse();
+                break;
+            case 6:
+                exit(0);
+            default:
+                printf ("Wrong Choice\n");
+                break;
+        }
+    }
+    return 0;
 }
