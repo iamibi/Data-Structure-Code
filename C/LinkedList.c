@@ -1,3 +1,9 @@
+/*
+ *
+ * Linked List Program
+ * 
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -169,6 +175,7 @@ void delete()
             printf ("Invalid Choice\n");
             break;
     }
+    count--;
 }
 
 void traverse()
