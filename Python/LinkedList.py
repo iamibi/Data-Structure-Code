@@ -1,3 +1,7 @@
+import sys;
+
+count = 0;
+
 class Node:
     def __init__(self, value):
         self.data = value;
@@ -18,28 +22,39 @@ class List:
     def isEmpty(self):
         return self.head == None;
     
-    def add(self, item):
+    def Insert(self, item):
+        global count;
+
+        count = count + 1
         temp = Node(item);
         temp.setNext(self.head);
         self.head = temp;
         
-    def size(self):
-        current = self.head;
-        count = 0;
-
-        while current != None:
-            count = count + 1;
-            current = current.getNext()
-
+        
+    def Size(self):
+        global count;
         return count;
 
     def Traverse(self):
+        global count
         temp = self.head;
 
         while temp != None:
             print ("%d -> "%(temp.getData()), end = '');
             temp = temp.getNext();
-        print ()
+        print ("Number of nodes = %d"%(count))
+        
+    def Search(self, val):
+        ptr = self.head;
+        found = False;
+
+        while ptr != None and not found:
+            if ptr.getData() == val:
+                found = True;
+            else:
+                ptr = ptr.getNext();
+
+        return found;
 
     def Delete(self, item):
         current = self.head;
@@ -55,9 +70,43 @@ class List:
         if prev == None:
             self.head = current.getNext();
         else:
-            prev.setNext(current.getNext())
+            prev.setNext(current.getNext());
+        count = count - 1;
+            
 def main():
-    print ("Linked List Program in Python")
+    try:
+        print ("Linked List Program in Python");
+        LinkedList = List();
+        
+        while True:
+            ch = int(input("1.Insert\n2.Delete\n3.Traverse\n4.Exit\nEnter your choice: "));
+            if ch == 1:
+                val = int(input("Enter the value to insert: "));
+                if LinkedList.isEmpty():
+                    print ("First Node Inserted");
+                LinkedList.Insert(val);
+            elif ch == 2:
+                if LinkedList.isEmpty():
+                    print ("---Underflow---");
+                else:
+                    val = int(input("Enter the value to be deleted: "));
+                
+                    if LinkedList.Search(val):
+                        LinkedList.Delete(val);
+                    else:
+                        print ("The value doesn't exist in the list");
+            elif ch == 3:
+                if LinkedList.isEmpty():
+                    print ("Nothing to traverse");
+                else:
+                    LinkedList.Traverse();
+            elif ch == 4:
+                sys.exit("Exiting...");
+            else:
+                print ("Invalid Choice")
+                
+    except Exception as er:
+        print ("Something has gone wrong: " + str(er));
 
 if __name__ == '__main__':
-    main()
+    main();
